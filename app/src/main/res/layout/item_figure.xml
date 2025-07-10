@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:layout_margin="4dp"
+    android:background="@android:color/white">
+
+        <!-- Ảnh sản phẩm -->
+        <ImageView
+            android:id="@+id/imgFigure"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher_background" />
+
+        <!-- Tên sản phẩm -->
+        <TextView
+            android:id="@+id/txtName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:text="Tên sản phẩm hiển thị ở đây..."
+            android:textSize="14sp"
+            android:layout_marginTop="4dp" />
+
+        <!-- Giá -->
+        <TextView
+            android:id="@+id/txtPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="590,000₫"
+            android:textColor="#FF0000"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp" />
+
+</LinearLayout>
+
