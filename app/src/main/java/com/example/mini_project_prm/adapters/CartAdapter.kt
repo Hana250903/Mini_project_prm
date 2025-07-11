@@ -9,8 +9,8 @@ import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mini_project_prm.fragments.CartFragment
-import com.example.mini_project_prm.models.CartItem
 import com.example.mini_project_prm.R
+import com.example.mini_project_prm.models.CartItem
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -38,7 +38,7 @@ class CartAdapter(
     override fun onBindViewHolder(holder: CartViewHolder, position: Int) {
         val item = cartItems[position]
 
-        holder.imgProduct.setImageResource(item.imageResId)
+        holder.imgProduct.setImageResource(item.imageUrl)
         holder.tvName.text = item.name
         holder.tvDescription.text = item.description
 

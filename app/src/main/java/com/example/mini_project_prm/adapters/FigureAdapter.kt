@@ -26,8 +26,8 @@ class FigureAdapter(private val figures: List<Figure>):
 
     override fun onBindViewHolder(holder: FigureViewHolder, position: Int) {
         val figure = figures[position]
-        holder.imgFigure.setImageResource(figure.imgFigure)
-        holder.textName.text = figure.nameFigure
+        holder.imgFigure.setImageResource(figure.imageUrl)
+        holder.textName.text = figure.name
         val formattedPrice = NumberFormat.getNumberInstance(Locale("vi", "VN")).format(figure.price)
         holder.price.text = "${formattedPrice}đ"
     }

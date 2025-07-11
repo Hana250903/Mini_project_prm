@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("kotlin-kapt")
 }
 
 android {
@@ -47,4 +48,15 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    // Room components
+    val room_version = "2.6.1" // Thay thế bằng phiên bản mới nhất
+    implementation ("androidx.room:room-runtime:$room_version")
+    // XÓA DÒNG NÀY: annotationProcessor("androidx.room:room-compiler:$room_version")
+    implementation ("androidx.room:room-ktx:$room_version") // Thêm thư viện KTX cho Kotlin
+    kapt("androidx.room:room-compiler:$room_version") // GIỮ DÒNG NÀY
+
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
 }

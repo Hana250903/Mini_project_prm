@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.mini_project_prm.models.CartItem
 import com.example.mini_project_prm.R
 import com.example.mini_project_prm.adapters.CartAdapter
 import java.text.NumberFormat
