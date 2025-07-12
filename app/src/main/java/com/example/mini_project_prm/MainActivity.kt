@@ -16,12 +16,24 @@ import com.example.mini_project_prm.fragments.HomeFragment
 import com.example.mini_project_prm.fragments.PurchaseHistoryFragment // Import trang Lịch sử
 import com.example.mini_project_prm.fragments.UserInfoFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.view.MotionEvent
+import android.view.View.OnTouchListener
+import android.widget.Toast
+import androidx.cardview.widget.CardView
+import com.google.android.material.chip.Chip
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var imgUser: ImageView
     private lateinit var imgCategory: ImageView
     private var isCategoryVisible = false
+
+    private lateinit var fabChat: FloatingActionButton
+    private lateinit var chatboxView: CardView
+    private var isChatboxOpen = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +59,12 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationView = findViewById(R.id.bottomNavigationView)
         imgUser = findViewById(R.id.imgUser)
         imgCategory = findViewById(R.id.imgCategory)
+        fabChat = findViewById(R.id.fab_chat)
+        chatboxView = findViewById(R.id.chatbox_view)
 
+        setupChatbox()
+
+        // Thiết lập các listener cho chatbox
         // Tải ảnh cho các icon trên cùng bằng Coil
         loadTopBarImages()
 
@@ -62,6 +79,113 @@ class MainActivity : AppCompatActivity() {
             loadFragment(HomeFragment())
             bottomNavigationView.selectedItemId = R.id.nav_home
         }
+    }
+
+    // Trong MainActivity.kt
+
+    private fun setupChatbox() {
+        // Logic kéo/thả icon đã được nâng cấp
+        fabChat.setOnTouchListener(object : View.OnTouchListener {
+            private var initialX = 0
+            private var initialY = 0
+            private var initialTouchX = 0f
+            private var initialTouchY = 0f
+            private val CLICK_THRESHOLD = 10
+
+            override fun onTouch(v: View, event: MotionEvent): Boolean {
+                when (event.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        initialX = v.x.toInt()
+                        initialY = v.y.toInt()
+                        initialTouchX = event.rawX
+                        initialTouchY = event.rawY
+                        return true
+                    }
+                    MotionEvent.ACTION_MOVE -> {
+                        // Di chuyển icon theo ngón tay
+                        v.x = initialX + (event.rawX - initialTouchX)
+                        v.y = initialY + (event.rawY - initialTouchY)
+                        return true
+                    }
+                    MotionEvent.ACTION_UP -> {
+                        val dX = (event.rawX - initialTouchX).toInt()
+                        val dY = (event.rawY - initialTouchY).toInt()
+
+                        // Nếu di chuyển ít, coi như là một cú click
+                        if (Math.abs(dX) < CLICK_THRESHOLD && Math.abs(dY) < CLICK_THRESHOLD) {
+                            v.performClick()
+                        } else {
+                            // === LOGIC MỚI: TỰ ĐỘNG DI CHUYỂN VỀ CẠNH ===
+                            val screenWidth = resources.displayMetrics.widthPixels
+                            // Nếu icon ở nửa bên trái màn hình
+                            if (v.x + v.width / 2 < screenWidth / 2) {
+                                // Di chuyển về cạnh trái
+                                v.animate().x(24f).setDuration(200).start()
+                            } else {
+                                // Di chuyển về cạnh phải
+                                v.animate().x((screenWidth - v.width - 24).toFloat()).setDuration(200).start()
+                            }
+                        }
+                        return true
+                    }
+                }
+                return false
+            }
+        })
+
+        // Logic hiện/ẩn chatbox khi click (giữ nguyên)
+        fabChat.setOnClickListener {
+            toggleChatbox()
+        }
+
+        findViewById<ImageView>(R.id.btn_close_chatbox).setOnClickListener {
+            toggleChatbox()
+        }
+
+        // Logic cho các nút chọn sẵn (giữ nguyên)
+        findViewById<Chip>(R.id.chip_option_1).setOnClickListener { sendQuickReply((it as Chip).text.toString()) }
+        findViewById<Chip>(R.id.chip_option_2).setOnClickListener { sendQuickReply((it as Chip).text.toString()) }
+        findViewById<Chip>(R.id.chip_option_3).setOnClickListener { sendQuickReply((it as Chip).text.toString()) }
+    }
+
+    // Hàm mới để hiện/ẩn chatbox với animation
+    private fun toggleChatbox() {
+        if (isChatboxOpen) {
+            // Đóng chatbox
+            chatboxView.animate()
+                .alpha(0f)
+                .scaleX(0.8f)
+                .scaleY(0.8f)
+                .setDuration(200)
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator) {
+                        super.onAnimationEnd(animation)
+                        chatboxView.visibility = View.GONE
+                        fabChat.show() // Hiện lại icon
+                    }
+                })
+        } else {
+            // Mở chatbox
+            fabChat.hide() // Ẩn icon đi
+            chatboxView.visibility = View.VISIBLE
+            chatboxView.alpha = 0f
+            chatboxView.animate()
+                .alpha(1f)
+                .scaleX(1f)
+                .scaleY(1f)
+                .setDuration(200)
+                .setListener(null)
+        }
+        isChatboxOpen = !isChatboxOpen
+    }
+
+    // Hàm mới để xử lý khi người dùng chọn option
+    private fun sendQuickReply(text: String) {
+        // Tạm thời chỉ hiển thị Toast
+        Toast.makeText(this, "Bạn đã chọn: $text", Toast.LENGTH_SHORT).show()
+
+        // TODO: Gửi `text` này đến AI của bạn để xử lý
+        // Sau đó nhận kết quả và hiển thị lên RecyclerView (rv_chat_messages)
     }
 
     private fun loadTopBarImages() {
@@ -84,9 +208,7 @@ class MainActivity : AppCompatActivity() {
         imgUser.setOnClickListener {
             loadFragment(UserInfoFragment())
         }
-        imgCategory.setOnClickListener {
-            toggleCategoryFragment()
-        }
+        // Dòng xử lý click cho imgCategory đã được xóa bỏ
     }
 
     private fun setupBottomNavigation() {
