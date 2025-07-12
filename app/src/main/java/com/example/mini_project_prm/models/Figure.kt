@@ -1,10 +1,11 @@
 package com.example.mini_project_prm.models
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize // <-- Import dòng này
 
-// Không cần @Serializable khi dùng Gson
+@Parcelize // <-- Thêm annotation này
 data class Figure(
-    // Dùng @SerializedName nếu tên cột trong Supabase khác tên biến
     @SerializedName("figureId")
     val id: Int,
 
@@ -32,6 +33,7 @@ data class Figure(
     @SerializedName("stock")
     val stock: Int,
 
+    // imageUrl của bạn đang là Int (R.drawable.id), điều này OK
     @SerializedName("imageUrl")
     val imageUrl: Int
-)
+) : Parcelable // <-- Thêm kế thừa này

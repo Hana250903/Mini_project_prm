@@ -1,80 +1,84 @@
 package com.example.mini_project_prm.fragments
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mini_project_prm.R
 import com.example.mini_project_prm.adapters.FigureAdapter
-import com.example.mini_project_prm.api.RetrofitClient
 import com.example.mini_project_prm.models.Figure
-import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
+        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val imgBackround = view.findViewById<ImageView>(R.id.imgBackground)
-        imgBackround.setImageResource(R.drawable.background_first)
+        super.onViewCreated(view, savedInstanceState)
+
+        // Dòng này không cần thiết nữa nếu bạn đã set ảnh trong XML của CoordinatorLayout
+        // Nhưng nếu bạn muốn thay đổi ảnh động thì có thể giữ lại
+        val imgBackground = view.findViewById<ImageView>(R.id.imgBackground)
+        imgBackground.setImageResource(R.drawable.background_first)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerViewFigures)
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
 
+        // === PHẦN THAY ĐỔI CHÍNH ===
+        // Tạo danh sách figures với đầy đủ các thuộc tính như trong model
+        // Điều này rất quan trọng để có thể truyền dữ liệu sang ProductDetailActivity
         val figures = listOf(
             Figure(
                 id = 1,
                 name = "Tokisaki Kurumi Nightwear ver. Desktop Cute - Date A Live V | Taito Figure.",
-                description = "PVC figure with detailed sculpt and color. Approx 18cm tall.",
+                description = "Mô hình Tokisaki Kurumi trong trang phục nightwear đáng yêu từ series Date A Live V, sản xuất bởi Taito.",
                 price = 490000.0,
                 brand = "Taito",
-                releaseDate = "2024-04-01",
-                category = "Nightwear",
-                series = "Date A Live",
-                stock = 10,
+                releaseDate = "2024-10-01",
+                category = "Desktop Cute",
+                series = "Date A Live V",
+                stock = 15,
                 imageUrl = R.drawable.kurumi
             ),
             Figure(
                 id = 2,
                 name = "Sakurajima Mai Bunny Girl Ver. Artist MasterPiece AMP+ - Bunny Girl Senpai | TAITO Figure",
-                description = "From the popular anime Bunny Girl Senpai. Highly detailed sculpt.",
+                description = "Phiên bản đặc biệt Artist MasterPiece+ của Sakurajima Mai trong trang phục bunny girl, sản xuất bởi Taito.",
                 price = 450000.0,
                 brand = "Taito",
-                releaseDate = "2023-12-15",
-                category = "Bunny Girl",
-                series = "Rascal Does Not Dream",
-                stock = 8,
+                releaseDate = "2024-08-15",
+                category = "AMP+",
+                series = "Bunny Girl Senpai",
+                stock = 10,
                 imageUrl = R.drawable.mai
             ),
             Figure(
                 id = 3,
                 name = "Nendoroid 1979 Hoshimachi Suisei - Hololive | Good Smile Company Figure",
-                description = "Hololive idol Suisei in cute Nendoroid form. Includes accessories.",
+                description = "Nendoroid đáng yêu của VTuber Hoshimachi Suisei từ Hololive, đi kèm nhiều phụ kiện và biểu cảm.",
                 price = 1350000.0,
                 brand = "Good Smile Company",
-                releaseDate = "2023-09-10",
+                releaseDate = "2025-01-20",
                 category = "Nendoroid",
                 series = "Hololive",
-                stock = 15,
+                stock = 5,
                 imageUrl = R.drawable.suisei
             ),
             Figure(
                 id = 4,
                 name = "Nakano Miku Bloo-me - Gotoubun no Hanayome | FuRyu Figure",
-                description = "Miku in Bloo-me version from The Quintessential Quintuplets.",
+                description = "Mô hình Nakano Miku trong dòng sản phẩm Bloo-me của FuRyu, tái hiện vẻ đẹp dịu dàng.",
                 price = 490000.0,
                 brand = "FuRyu",
-                releaseDate = "2024-01-20",
-                category = "Romantic",
+                releaseDate = "2024-11-30",
+                category = "Scale Figure",
                 series = "Gotoubun no Hanayome",
                 stock = 12,
                 imageUrl = R.drawable.nakano_miku
@@ -82,41 +86,29 @@ class HomeFragment : Fragment() {
             Figure(
                 id = 5,
                 name = "Ainz Ooal Gown - Overlord | Bandai Spirits Figure",
-                description = "Powerful Ainz from Overlord. Great detail and paint finish.",
+                description = "Mô hình mạnh mẽ và uy nghi của Ainz Ooal Gown từ series Overlord, sản xuất bởi Bandai Spirits.",
                 price = 690000.0,
                 brand = "Bandai Spirits",
-                releaseDate = "2024-02-05",
-                category = "Fantasy",
+                releaseDate = "2024-12-10",
+                category = "Scale Figure",
                 series = "Overlord",
-                stock = 6,
+                stock = 8,
                 imageUrl = R.drawable.ainz_ooal_gown
             ),
             Figure(
                 id = 6,
                 name = "Nendoroid 1688 Gawr Gura - hololive production | Good Smile Company Figure",
-                description = "Super popular VTuber Gura as an adorable Nendoroid.",
+                description = "Nendoroid 'cá mập' Gawr Gura siêu cấp đáng yêu từ Hololive English, sản xuất bởi Good Smile Company.",
                 price = 2450000.0,
                 brand = "Good Smile Company",
-                releaseDate = "2023-08-01",
-                category = "VTuber",
+                releaseDate = "2024-09-01",
+                category = "Nendoroid",
                 series = "Hololive",
-                stock = 5,
+                stock = 3,
                 imageUrl = R.drawable.gawr_gura
             )
         )
+
         recyclerView.adapter = FigureAdapter(figures)
-
-        super.onViewCreated(view, savedInstanceState)
-
-        // Gọi API bằng coroutine
-        lifecycleScope.launch {
-            try {
-                val figures = RetrofitClient.instance.getFigures()
-                // dùng data như gán adapter, cập nhật UI
-                Log.d("API_RESULT", "Số figure: ${figures.size}")
-            } catch (e: Exception) {
-                Log.e("API_ERROR", "Lỗi API: ${e.message}")
-            }
-        }
     }
 }
