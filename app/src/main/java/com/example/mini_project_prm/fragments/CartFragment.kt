@@ -2,6 +2,7 @@ package com.example.mini_project_prm.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -54,6 +55,7 @@ class CartFragment : Fragment() {
             val cartItems = CartManager.getCartItems()
             val totalItems = cartItems.sumOf { it.quantity } // Giả sử mỗi item có quantity
             val totalPrice = CartManager.getTotalPrice().toDouble() // Trả về số tiền dạng Int hoặc Long
+            Log.d("CartDebug", "Tổng số lượng: $totalItems, Tổng giá: $totalPrice")
 
             val intent = Intent(requireContext(), OrderPayment::class.java)
             intent.putExtra("soluong", "$totalItems sản phẩm")

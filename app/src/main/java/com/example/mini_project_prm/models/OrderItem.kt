@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class OrderItem(
     @SerializedName("orderitemid")
-    val id: Int,
+    val id: Int? = null,
 
     @SerializedName("orderid")
     val orderId: Int,
@@ -18,6 +18,6 @@ data class OrderItem(
     @SerializedName("unitprice")
     val unitPrice: Double,
 
-    @SerializedName("imageresid")
+    @SerializedName("imageResId")
     val imageResId: Int
 )

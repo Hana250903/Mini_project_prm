@@ -66,6 +66,7 @@ class OrderPayment : AppCompatActivity() {
 
         btnThanhToan.setOnClickListener {
             createOrderInDatabase(total) { orderId ->
+                Log.d("Order", "Order ID: $orderId")
                 if (orderId != null) {
                     createOrderItems(orderId)
 
@@ -79,12 +80,10 @@ class OrderPayment : AppCompatActivity() {
     }
 
     private fun createOrderInDatabase(total: Double, onComplete: (Int?) -> Unit) {
-        val orderIdTemp = (System.currentTimeMillis() / 1000).toInt() // tạm tạo ID random nếu Supabase không trả ID
         val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
         val currentDate = sdf.format(Date())
 
         val order = Order(
-            id = orderIdTemp,
             userId = 1,
             orderDate = currentDate,
             totalAmount = total,
@@ -95,8 +94,10 @@ class OrderPayment : AppCompatActivity() {
             try {
                 val response = RetrofitClient.instance.createOrder(order)
                 if (response.isSuccessful) {
-                    Log.d("Order", "Order created")
-                    onComplete(order.id) // hoặc response.body().id nếu có trả về
+                    val createdOrders = response.body()
+                    val newOrderId = createdOrders?.firstOrNull()?.id
+                    Log.d("Order", "Order created with ID = $newOrderId")
+                    onComplete(newOrderId)
                 } else {
                     Log.e("Order", "Failed to create order: ${response.code()}")
                     onComplete(null)
@@ -108,12 +109,12 @@ class OrderPayment : AppCompatActivity() {
         }
     }
 
+
     private fun createOrderItems(orderId: Int) {
         val cartItems = CartManager.getCartItems()
         lifecycleScope.launch {
             cartItems.forEach { item ->
                 val orderItem = OrderItem(
-                    id = 0, // Supabase sẽ tự tạo
                     orderId = orderId,
                     figureId = item.figureId, // đảm bảo CartItem có figureId
                     quantity = item.quantity,

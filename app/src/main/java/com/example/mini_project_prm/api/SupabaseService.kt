@@ -9,6 +9,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
@@ -30,15 +31,19 @@ interface SupabaseService {
     suspend fun getFigures(): List<Figure>
 
     // ORDER
-    @GET("orders")
+    @GET("orders?userid=eq.{id}")
     suspend fun getOrders(): List<Order>
 
     @POST("orders")
-    suspend fun createOrder(@Body order: Order): Response<Unit>
+    @Headers("Prefer: return=representation")
+    suspend fun createOrder(@Body order: Order): Response<List<Order>>
+
+    @PUT("orders?id=eq.{id}")
+    suspend fun updateOrder(@Path("id") id: Int, @Body order: Order): Response<Unit>
 
     // ORDER ITEM
-    @GET("orderitems")
-    suspend fun getOrderItems(): List<OrderItem>
+    @GET("orderitems?orderid=eq.{id}")
+    suspend fun getOrderItems(@Path("id") id: Int): List<OrderItem>
 
     @POST("orderitems")
     suspend fun createOrderItem(@Body item: OrderItem): Response<Unit>
