@@ -1,0 +1,58 @@
+package com.example.mini_project_prm.api
+
+import com.example.mini_project_prm.models.CartItem
+import com.example.mini_project_prm.models.Figure
+import com.example.mini_project_prm.models.Order
+import com.example.mini_project_prm.models.OrderItem
+import com.example.mini_project_prm.models.User
+import retrofit2.Response
+import retrofit2.http.Body
+import retrofit2.http.DELETE
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Path
+
+interface SupabaseService {
+
+    // USER
+    @GET("User")
+    suspend fun getUsers(): List<User>
+
+    @POST("User")
+    suspend fun createUser(@Body user: User): Response<Unit>
+
+    @PUT("User?id=eq.{id}")
+    suspend fun updateUser(@Path("id") id: Int, @Body user: User): Response<Unit>
+
+    // FIGURE
+    @GET("Figure")
+    suspend fun getFigures(): List<Figure>
+
+    // ORDER
+    @GET("Order")
+    suspend fun getOrders(): List<Order>
+
+    @POST("Order")
+    suspend fun createOrder(@Body order: Order): Response<Unit>
+
+    // ORDER ITEM
+    @GET("OrderItem")
+    suspend fun getOrderItems(): List<OrderItem>
+
+    @POST("OrderItem")
+    suspend fun createOrderItem(@Body item: OrderItem): Response<Unit>
+
+    // CART ITEM
+    @GET("CartItem")
+    suspend fun getCartItems(): List<CartItem>
+
+    @POST("CartItem")
+    suspend fun addCartItem(@Body item: CartItem): Response<Unit>
+
+    @PUT("CartItem?id=eq.{id}")
+    suspend fun updateCartItem(@Path("id") id: Int, @Body item: CartItem): Response<Unit>
+
+    @DELETE("CartItem?id=eq.{id}")
+    suspend fun deleteCartItem(@Path("id") id: Int): Response<Unit>
+}

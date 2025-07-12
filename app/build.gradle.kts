@@ -1,7 +1,15 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("kotlin-kapt")
+}
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
 }
 
 android {
@@ -16,6 +24,16 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        android.buildFeatures.buildConfig = true
+
+        val supabaseKey = localProperties["supabase.anonKey"] as String
+        val supabaseUrl = localProperties["supabase.url"] as String
+
+        buildConfigField("String", "SUPABASE_ANON_KEY", "\"$supabaseKey\"")
+        buildConfigField("String", "SUPABASE_URL", "\"$supabaseUrl\"")
+
+
     }
 
     buildTypes {
@@ -50,11 +68,10 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     // Room components
-    val room_version = "2.6.1" // Thay thế bằng phiên bản mới nhất
+    val room_version = "2.6.1"
     implementation ("androidx.room:room-runtime:$room_version")
-    // XÓA DÒNG NÀY: annotationProcessor("androidx.room:room-compiler:$room_version")
-    implementation ("androidx.room:room-ktx:$room_version") // Thêm thư viện KTX cho Kotlin
-    kapt("androidx.room:room-compiler:$room_version") // GIỮ DÒNG NÀY
+    implementation ("androidx.room:room-ktx:$room_version")
+    kapt("androidx.room:room-compiler:$room_version")
 
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
