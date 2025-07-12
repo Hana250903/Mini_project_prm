@@ -103,4 +103,9 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
     // Google Sign-In
     implementation("com.google.android.gms:play-services-auth:21.2.0")
+
+    // Dành cho việc tải ảnh thông thường
+    implementation("io.coil-kt:coil:2.6.0")
+// Dành cho việc tải ảnh định dạng SVG (cho icon người dùng)
+    implementation("io.coil-kt:coil-svg:2.6.0")
 }
