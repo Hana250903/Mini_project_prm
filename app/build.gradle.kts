@@ -27,6 +27,12 @@ android {
             )
         }
     }
+
+    buildFeatures {
+        viewBinding = true
+        dataBinding = true
+    }
+    
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -49,6 +55,11 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    implementation(fileTree(mapOf(
+        "dir" to "E:\\AndroidProject\\Mini_project_prm\\app\\libs",
+        "include" to listOf("*.aar", "*.jar"),
+        "exclude" to listOf("")
+    )))
     // Room components
     val room_version = "2.6.1" // Thay thế bằng phiên bản mới nhất
     implementation ("androidx.room:room-runtime:$room_version")
@@ -59,4 +70,13 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
+    implementation("com.squareup.okhttp3:okhttp:4.9.0")
+    implementation("commons-codec:commons-codec:1.14")
+
+    // JSON
+    implementation("org.json:json:20231013")
+    // Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
+    // Google Sign-In
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
 }
