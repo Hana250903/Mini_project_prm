@@ -30,12 +30,6 @@ class LoginActivity : AppCompatActivity() {
                 try {
                     val account = task.getResult(ApiException::class.java)!!
                     val email = account.email ?: ""
-                    val allowedDomain = "fpt.edu.vn" // <-- Đổi domain bạn muốn kiểm tra
-                    if (!email.endsWith("@$allowedDomain")) {
-                        Toast.makeText(this, "Chỉ cho phép tài khoản @$allowedDomain", Toast.LENGTH_LONG).show()
-                        googleSignInClient.signOut() // Đăng xuất luôn
-                        return@registerForActivityResult
-                    }
                     Toast.makeText(this, "Đăng nhập thành công với ${account.email}", Toast.LENGTH_SHORT).show()
                     updateUI(account)
                 } catch (e: ApiException) {
