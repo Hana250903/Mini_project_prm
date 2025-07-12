@@ -10,14 +10,22 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import com.example.mini_project_prm.R
+import com.example.mini_project_prm.api.RetrofitClient
+import com.example.mini_project_prm.models.CartManager
+import com.example.mini_project_prm.models.Order
+import com.example.mini_project_prm.models.OrderItem
 import com.example.mini_project_prm.zalo_pay.api.CreateOrder
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 import vn.zalopay.sdk.Environment
 import vn.zalopay.sdk.ZaloPayError
 import vn.zalopay.sdk.ZaloPaySDK
 import vn.zalopay.sdk.listeners.PayOrderListener
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 class OrderPayment : AppCompatActivity() {
@@ -57,67 +65,109 @@ class OrderPayment : AppCompatActivity() {
         tvTongTien.text = totalFormatted
 
         btnThanhToan.setOnClickListener {
-            val orderApi = CreateOrder()
-            try {
-                // Gọi createOrder, và vì nó trả về JSONObject? nên cần xử lý null
-                val data: JSONObject? = orderApi.createOrder(totalString)
+            createOrderInDatabase(total) { orderId ->
+                if (orderId != null) {
+                    createOrderItems(orderId)
 
-                if (data != null) { // Kiểm tra nếu data không null
-                    val code = data.getString("return_code")
-
-                    if (code == "1") {
-                        val token = data.getString("zp_trans_token")
-                        Log.d("ZaloPayDebug", "return_code: $code | token: $token")
-
-                        ZaloPaySDK.getInstance().payOrder(this@OrderPayment, token, "demozpdk://app", object : PayOrderListener {
-                            override fun onPaymentSucceeded(transactionId: String, transToken: String, appTransID: String) {
-                                Log.d("ZaloPayDebug", "Payment succeeded: $transactionId")
-                                val intent1 = Intent(this@OrderPayment, PaymentNotification::class.java)
-                                intent1.putExtra("result", "Thanh toán thành công")
-                                intent1.putExtra("total", "Bạn đã thanh toán $totalFormatted")
-                                startActivity(intent1)
-                            }
-
-                            override fun onPaymentCanceled(transToken: String, appTransID: String) {
-                                Log.d("ZaloPayDebug", "Payment canceled")
-                                val intent2 = Intent(this@OrderPayment, PaymentNotification::class.java)
-                                intent2.putExtra("result", "Thanh toán đã được hủy")
-                                startActivity(intent2)
-                            }
-
-                            override fun onPaymentError(zaloPayError: ZaloPayError, transToken: String, appTransID: String) {
-                                Log.e("ZaloPayDebug", "Payment error: ${zaloPayError.toString()}")
-                                val intent3 = Intent(this@OrderPayment, PaymentNotification::class.java)
-                                intent3.putExtra("result", "Lỗi thanh toán")
-                                startActivity(intent3)
-                            }
-                        })
-                    } else {
-                        // Xử lý các mã lỗi khác từ ZaloPay API nếu cần
-                        Log.e("ZaloPayDebug", "ZaloPay API returned error code: $code, message: ${data.optString("return_message")}")
-                        val errorMsg = data.optString("return_message", "Có lỗi xảy ra khi tạo đơn hàng.")
-                        val intentErr = Intent(this@OrderPayment, PaymentNotification::class.java)
-                        intentErr.putExtra("result", "Lỗi tạo đơn hàng")
-                        intentErr.putExtra("message", errorMsg)
-                        startActivity(intentErr)
-                    }
+                    // Gọi ZaloPay sau khi đã lưu DB
+                    payWithZaloPay(totalString, totalFormatted)
                 } else {
-                    // Xử lý trường hợp data trả về từ createOrder là null (ví dụ: lỗi mạng)
-                    Log.e("ZaloPayDebug", "API createOrder returned null data.")
-                    val intentNull = Intent(this@OrderPayment, PaymentNotification::class.java)
-                    intentNull.putExtra("result", "Lỗi kết nối hoặc dữ liệu")
-                    intentNull.putExtra("message", "Không thể tạo đơn hàng, vui lòng thử lại.")
-                    startActivity(intentNull)
+                    Log.e("Order", "Không tạo được đơn hàng, không thể thanh toán")
                 }
+            }
+        }
+    }
 
+    private fun createOrderInDatabase(total: Double, onComplete: (Int?) -> Unit) {
+        val orderIdTemp = (System.currentTimeMillis() / 1000).toInt() // tạm tạo ID random nếu Supabase không trả ID
+        val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+        val currentDate = sdf.format(Date())
+
+        val order = Order(
+            id = orderIdTemp,
+            userId = 1,
+            orderDate = currentDate,
+            totalAmount = total,
+            status = "Pending"
+        )
+
+        lifecycleScope.launch {
+            try {
+                val response = RetrofitClient.instance.createOrder(order)
+                if (response.isSuccessful) {
+                    Log.d("Order", "Order created")
+                    onComplete(order.id) // hoặc response.body().id nếu có trả về
+                } else {
+                    Log.e("Order", "Failed to create order: ${response.code()}")
+                    onComplete(null)
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
-                Log.e("ZaloPayDebug", "Exception during order creation or ZaloPay SDK call", e)
-                val intentEx = Intent(this@OrderPayment, PaymentNotification::class.java)
-                intentEx.putExtra("result", "Lỗi hệ thống")
-                intentEx.putExtra("message", "Đã xảy ra lỗi không mong muốn.")
-                startActivity(intentEx)
+                onComplete(null)
             }
+        }
+    }
+
+    private fun createOrderItems(orderId: Int) {
+        val cartItems = CartManager.getCartItems()
+        lifecycleScope.launch {
+            cartItems.forEach { item ->
+                val orderItem = OrderItem(
+                    id = 0, // Supabase sẽ tự tạo
+                    orderId = orderId,
+                    figureId = item.figureId, // đảm bảo CartItem có figureId
+                    quantity = item.quantity,
+                    unitPrice = item.priceSale,
+                    imageResId = item.imageUrl
+                )
+                try {
+                    val response = RetrofitClient.instance.createOrderItem(orderItem)
+                    if (response.isSuccessful) {
+                        Log.d("OrderItem", "Item saved")
+                    } else {
+                        Log.e("OrderItem", "Failed to save item: ${response.code()}")
+                    }
+                } catch (e: Exception) {
+                    Log.e("OrderItem", "Error: ${e.message}")
+                }
+            }
+        }
+    }
+
+    private fun payWithZaloPay(totalString: String, totalFormatted: String) {
+        val orderApi = CreateOrder()
+        try {
+            val data: JSONObject? = orderApi.createOrder(totalString)
+
+            if (data != null && data.getString("return_code") == "1") {
+                val token = data.getString("zp_trans_token")
+                ZaloPaySDK.getInstance().payOrder(this@OrderPayment, token, "demozpdk://app", object : PayOrderListener {
+                    override fun onPaymentSucceeded(transactionId: String, transToken: String, appTransID: String) {
+                        val intent1 = Intent(this@OrderPayment, PaymentNotification::class.java)
+                        intent1.putExtra("result", "Thanh toán thành công")
+                        intent1.putExtra("total", "Bạn đã thanh toán $totalFormatted")
+                        startActivity(intent1)
+                    }
+
+                    override fun onPaymentCanceled(transToken: String, appTransID: String) {
+                        val intent2 = Intent(this@OrderPayment, PaymentNotification::class.java)
+                        intent2.putExtra("result", "Thanh toán đã được hủy")
+                        startActivity(intent2)
+                    }
+
+                    override fun onPaymentError(zaloPayError: ZaloPayError, transToken: String, appTransID: String) {
+                        val intent3 = Intent(this@OrderPayment, PaymentNotification::class.java)
+                        intent3.putExtra("result", "Lỗi thanh toán")
+                        startActivity(intent3)
+                    }
+                })
+            } else {
+                val intentErr = Intent(this@OrderPayment, PaymentNotification::class.java)
+                intentErr.putExtra("result", "Lỗi tạo đơn hàng ZaloPay")
+                startActivity(intentErr)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 

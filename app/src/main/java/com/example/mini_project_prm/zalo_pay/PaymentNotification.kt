@@ -11,6 +11,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.mini_project_prm.MainActivity
 import com.example.mini_project_prm.R
+import com.example.mini_project_prm.models.CartManager.clearCart
 
 class PaymentNotification : AppCompatActivity() {
     private lateinit var tvNotify: TextView
@@ -53,7 +54,10 @@ class PaymentNotification : AppCompatActivity() {
 
         // Cập nhật icon dựa trên kết quả
         when (result) {
-            "Thanh toán thành công" -> imgPaymentStatus.setImageResource(R.drawable.ic_success)
+            "Thanh toán thành công" -> {
+                imgPaymentStatus.setImageResource(R.drawable.ic_success)
+                clearCart()
+            }
             "Thanh toán đã được hủy" -> imgPaymentStatus.setImageResource(R.drawable.ic_cancel)
             else -> imgPaymentStatus.setImageResource(R.drawable.ic_error)
         }

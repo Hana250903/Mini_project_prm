@@ -6,7 +6,7 @@ import kotlinx.parcelize.Parcelize // <-- Import dòng này
 
 @Parcelize // <-- Thêm annotation này
 data class Figure(
-    @SerializedName("figureId")
+    @SerializedName("figureid")
     val id: Int,
 
     @SerializedName("name")
@@ -21,7 +21,7 @@ data class Figure(
     @SerializedName("brand")
     val brand: String?,
 
-    @SerializedName("releaseDate")
+    @SerializedName("releasedate")
     val releaseDate: String?,
 
     @SerializedName("category")

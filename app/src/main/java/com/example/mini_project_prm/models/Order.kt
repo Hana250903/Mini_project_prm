@@ -3,16 +3,16 @@ package com.example.mini_project_prm.models
 import com.google.gson.annotations.SerializedName
 
 data class Order(
-    @SerializedName("orderId")
+    @SerializedName("orderid")
     val id: Int,
 
-    @SerializedName("userId")
+    @SerializedName("userid")
     val userId: Int,
 
-    @SerializedName("orderDate")
+    @SerializedName("orderdate")
     val orderDate: String,
 
-    @SerializedName("totalAmount")
+    @SerializedName("totalamount")
     val totalAmount: Double,
 
     @SerializedName("status")

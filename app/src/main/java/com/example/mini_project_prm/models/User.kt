@@ -3,17 +3,17 @@ package com.example.mini_project_prm.models
 import com.google.gson.annotations.SerializedName
 
 data class User(
-    @SerializedName("userId")
+    @SerializedName("userid")
     val id: Int,
 
-    @SerializedName("fullName")
+    @SerializedName("fullname")
     val fullName: String?,
 
     @SerializedName("email")
     val email: String,
 
     // Password hash thường không nên lấy về client, nhưng vẫn khai báo nếu cần
-    @SerializedName("passwordHash")
+    @SerializedName("passwordhash")
     val passwordHash: String?,
 
     @SerializedName("phone")
@@ -25,6 +25,6 @@ data class User(
     @SerializedName("role")
     val role: String,
 
-    @SerializedName("createdAt")
+    @SerializedName("createdat")
     val createdAt: String // Dữ liệu ngày tháng từ API
 )

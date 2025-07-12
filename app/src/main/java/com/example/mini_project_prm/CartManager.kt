@@ -47,6 +47,4 @@ object CartManager {
     fun clearCart() {
         cartItems.clear()
     }
-
-
 }
