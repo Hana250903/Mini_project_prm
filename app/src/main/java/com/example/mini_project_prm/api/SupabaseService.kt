@@ -16,31 +16,31 @@ import retrofit2.http.Path
 interface SupabaseService {
 
     // USER
-    @GET("User")
+    @GET("users")
     suspend fun getUsers(): List<User>
 
-    @POST("User")
+    @POST("users")
     suspend fun createUser(@Body user: User): Response<Unit>
 
-    @PUT("User?id=eq.{id}")
+    @PUT("users?id=eq.{id}")
     suspend fun updateUser(@Path("id") id: Int, @Body user: User): Response<Unit>
 
     // FIGURE
-    @GET("Figure")
+    @GET("figures")
     suspend fun getFigures(): List<Figure>
 
     // ORDER
-    @GET("Order")
+    @GET("orders")
     suspend fun getOrders(): List<Order>
 
-    @POST("Order")
+    @POST("orders")
     suspend fun createOrder(@Body order: Order): Response<Unit>
 
     // ORDER ITEM
-    @GET("OrderItem")
+    @GET("orderitems")
     suspend fun getOrderItems(): List<OrderItem>
 
-    @POST("OrderItem")
+    @POST("orderitems")
     suspend fun createOrderItem(@Body item: OrderItem): Response<Unit>
 
     // CART ITEM
@@ -56,3 +56,4 @@ interface SupabaseService {
     @DELETE("CartItem?id=eq.{id}")
     suspend fun deleteCartItem(@Path("id") id: Int): Response<Unit>
 }
+
