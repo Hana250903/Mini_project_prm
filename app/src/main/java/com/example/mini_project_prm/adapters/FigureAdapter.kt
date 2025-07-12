@@ -13,8 +13,9 @@ import com.example.mini_project_prm.ProductDetailActivity
 import java.text.NumberFormat
 import java.util.Locale
 
-class FigureAdapter(private val figures: List<Figure>):
-    RecyclerView.Adapter<FigureAdapter.FigureViewHolder>() {
+class FigureAdapter(
+    private var figures: List<Figure> // Đổi private val thành private var
+) : RecyclerView.Adapter<FigureAdapter.FigureViewHolder>() {
     inner class FigureViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val imgFigure: ImageView = itemView.findViewById(R.id.imgFigure)
         val textName: TextView = itemView.findViewById(R.id.txtName)
@@ -44,6 +45,11 @@ class FigureAdapter(private val figures: List<Figure>):
             context.startActivity(intent)
         }
 
+    }
+
+    fun updateData(newFigures: List<Figure>) {
+        this.figures = newFigures
+        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int = figures.size

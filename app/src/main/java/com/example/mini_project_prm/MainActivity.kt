@@ -14,6 +14,7 @@ import com.example.mini_project_prm.fragments.CategoryFragment
 import com.example.mini_project_prm.fragments.HomeFragment
 import com.example.mini_project_prm.fragments.UserInfoFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import coil.load // <-- Thêm import này
 
 class MainActivity : AppCompatActivity() {
     private lateinit var bottomNavigationView: BottomNavigationView
@@ -44,6 +45,26 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationView = findViewById(R.id.bottomNavigationView)
         imgUser = findViewById(R.id.imgUser)
         imgCategory = findViewById(R.id.imgCategory)
+
+        val logoUrl = "https://file.hstatic.net/200000462939/file/jhfigure_logo_68b33ad888be477280248144923b2983_grande.png"
+        val userIconUrl = "https://firebasestorage.googleapis.com/v0/b/imageuploadv3.appspot.com/o/UserImage%2F%E2%80%94Pngtree%E2%80%94user%20icon%20symbol%20design%20user_5061125.png?alt=media&token=27f1eeb7-0fed-4c07-9035-b8a006811cd5"
+
+
+        // Dùng Coil để tải ảnh logo
+        imgCategory.load(logoUrl) {
+            crossfade(true) // Hiệu ứng mờ dần
+            placeholder(R.drawable.ic_launcher_background) // Ảnh hiển thị trong lúc tải
+            error(R.drawable.ic_launcher_foreground) // Ảnh hiển thị khi lỗi
+        }
+
+        // Dùng Coil để tải ảnh user icon (SVG)
+        imgUser.load(userIconUrl) {
+            crossfade(true)
+            placeholder(R.drawable.ic_launcher_background)
+            error(R.drawable.ic_launcher_foreground)
+        }
+        // ================================
+
 
         // Xử lý sự kiện click icon user
         imgUser.setOnClickListener {

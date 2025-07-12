@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="sort_options">
+        <item>Sắp xếp mặc định</item>
+        <item>Giá: Thấp đến Cao</item>
+        <item>Giá: Cao đến Thấp</item>
+        <item>Tên: A-Z</item>
+        <item>Tên: Z-A</item>
+    </string-array>
+</resources>
