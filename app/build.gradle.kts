@@ -29,11 +29,17 @@ android {
 
         val supabaseKey = localProperties["supabase.anonKey"] as String
         val supabaseUrl = localProperties["supabase.url"] as String
+        val zalo_app_id = (localProperties["zalo_app_id"] as String).toInt()
+        val zalo_mac_key = localProperties["zalo_mac_key"] as String
+        val zalo_url_create_order = localProperties["zalo_url_create_order"] as String
+        val google_client_id = localProperties["google_client_id"] as String
 
         buildConfigField("String", "SUPABASE_ANON_KEY", "\"$supabaseKey\"")
         buildConfigField("String", "SUPABASE_URL", "\"$supabaseUrl\"")
-
-
+        buildConfigField("int", "ZALO_APP_ID", "$zalo_app_id")
+        buildConfigField ("String", "ZALO_MAC_KEY", "\"${zalo_mac_key}\"")
+        buildConfigField ("String", "ZALO_URL_CREATE_ORDER", "\"${zalo_url_create_order}\"")
+        buildConfigField("String", "GOOGLE_CLIENT_ID", "\"${google_client_id}\"")
     }
 
     buildTypes {

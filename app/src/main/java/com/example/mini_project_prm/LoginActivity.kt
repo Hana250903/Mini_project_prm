@@ -10,6 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.mini_project_prm.api.AppInfo.GOOGLE_CLIENT_ID
 import com.example.mini_project_prm.databinding.ActivityLoginBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -20,7 +21,7 @@ import com.google.android.gms.common.api.ApiException
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var googleSignInClient: GoogleSignInClient
-    private var GOOGLE_WEB_CLIENT_ID = "455820106735-tu52a0qo2jl7qj2hpvb9u4sct3d5fhgv.apps.googleusercontent.com" // Thay bằng Client ID từ Google Cloud
+    private var GOOGLE_WEB_CLIENT_ID = GOOGLE_CLIENT_ID
 
     private val googleSignInLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
