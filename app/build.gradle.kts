@@ -81,7 +81,7 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(fileTree(mapOf(
-        "dir" to "D:\\figure\\app\\libs",
+        "dir" to "E:\\AndroidProject\\Mini_project_prm\\app\\libs",
         "include" to listOf("*.aar", "*.jar"),
         "exclude" to listOf("")
     )))
