@@ -26,5 +26,17 @@ data class User(
     val role: String,
 
     @SerializedName("createdAt")
-    val createdAt: String // Dữ liệu ngày tháng từ API
+    val createdAt: String? =null, // Dữ liệu ngày tháng từ API
+
+    @SerializedName("gender")
+    val gender: String?,
+
+    @SerializedName("dob")
+    val dob: String?,
+
+    @SerializedName("countries")
+    val countries: String?,
+
+    @SerializedName("city")
+    val  city: String?
 )

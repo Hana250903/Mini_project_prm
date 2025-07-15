@@ -47,7 +47,12 @@ class MainActivity : AppCompatActivity() {
 
         // Xử lý sự kiện click icon user
         imgUser.setOnClickListener {
-            loadFragment(UserInfoFragment())
+            val userId = intent.getIntExtra("userid", -1)
+            val email = intent.getStringExtra("email") ?: ""
+            val fullName = intent.getStringExtra("fullName") ?: ""
+
+            val userInfoFragment = UserInfoFragment.newInstance(userId, fullName, email)
+            loadFragment(userInfoFragment)
         }
 
         // Xử lý sự kiện click icon category

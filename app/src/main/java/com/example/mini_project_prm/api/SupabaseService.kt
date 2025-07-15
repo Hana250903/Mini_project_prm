@@ -5,6 +5,7 @@ import com.example.mini_project_prm.models.Figure
 import com.example.mini_project_prm.models.Order
 import com.example.mini_project_prm.models.OrderItem
 import com.example.mini_project_prm.models.User
+import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -12,6 +13,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface SupabaseService {
 
@@ -22,8 +24,11 @@ interface SupabaseService {
     @POST("users")
     suspend fun createUser(@Body user: User): Response<Unit>
 
-    @PUT("users?id=eq.{id}")
-    suspend fun updateUser(@Path("id") id: Int, @Body user: User): Response<Unit>
+    @PUT("users")
+    suspend fun updateUser(
+        @Query("userid") idFilter: String,
+        @Body user: User
+    ): Response<ResponseBody>
 
     // FIGURE
     @GET("figures")
