@@ -86,7 +86,7 @@ class OrderPayment : AppCompatActivity() {
                 Log.d("Order", "Order ID: $orderId")
                 if (orderId != null) {
                     createOrderItems(orderId)
-                    payWithZaloPay(totalString, totalFormatted)
+                    payWithZaloPay(totalString, totalFormatted, orderId)
                 } else {
                     Log.e("Order", "Không tạo được đơn hàng, không thể thanh toán")
                 }
@@ -152,7 +152,7 @@ class OrderPayment : AppCompatActivity() {
         }
     }
 
-    private fun payWithZaloPay(totalString: String, totalFormatted: String) {
+    private fun payWithZaloPay(totalString: String, totalFormatted: String, createdOrderId: Int) {
         val orderApi = CreateOrder()
         try {
             val data: JSONObject? = orderApi.createOrder(totalString)
@@ -164,24 +164,28 @@ class OrderPayment : AppCompatActivity() {
                         val intent1 = Intent(this@OrderPayment, PaymentNotification::class.java)
                         intent1.putExtra("result", "Thanh toán thành công")
                         intent1.putExtra("total", "Bạn đã thanh toán $totalFormatted")
+                        intent1.putExtra("orderId", createdOrderId)
                         startActivity(intent1)
                     }
 
                     override fun onPaymentCanceled(transToken: String, appTransID: String) {
                         val intent2 = Intent(this@OrderPayment, PaymentNotification::class.java)
                         intent2.putExtra("result", "Thanh toán đã được hủy")
+                        intent2.putExtra("orderId", createdOrderId)
                         startActivity(intent2)
                     }
 
                     override fun onPaymentError(zaloPayError: ZaloPayError, transToken: String, appTransID: String) {
                         val intent3 = Intent(this@OrderPayment, PaymentNotification::class.java)
                         intent3.putExtra("result", "Lỗi thanh toán")
+                        intent3.putExtra("orderId", createdOrderId)
                         startActivity(intent3)
                     }
                 })
             } else {
                 val intentErr = Intent(this@OrderPayment, PaymentNotification::class.java)
                 intentErr.putExtra("result", "Lỗi tạo đơn hàng ZaloPay")
+                intentErr.putExtra("orderId", createdOrderId)
                 startActivity(intentErr)
             }
         } catch (e: Exception) {

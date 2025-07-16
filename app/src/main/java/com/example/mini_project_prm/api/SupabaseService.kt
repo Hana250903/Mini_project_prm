@@ -11,6 +11,7 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Headers
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
@@ -38,12 +39,22 @@ interface SupabaseService {
     @GET("orders")
     suspend fun getOrderById(@Query("userid") userId: String): List<Order>
 
+    @GET("orders")
+    suspend fun getOrderByOrderId(@Query("orderid") orderId: String): List<Order>
+
     @POST("orders")
     @Headers("Prefer: return=representation")
     suspend fun createOrder(@Body order: Order): Response<List<Order>>
 
-    @PUT("orders?id=eq.{id}")
-    suspend fun updateOrder(@Path("id") id: Int, @Body order: Order): Response<Unit>
+    @PATCH("orders")
+    @Headers(
+        "Content-Type: application/json",
+        "Prefer: return=representation"
+    )
+    suspend fun updateOrder(
+        @Query("orderid") orderId: String,
+        @Body updateBody: Map<String, Any>
+    ): Response<Unit>
 
     // ORDER ITEM
     @GET("orderitems")

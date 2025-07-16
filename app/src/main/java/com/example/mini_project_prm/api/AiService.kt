@@ -22,7 +22,8 @@ interface ChatApi {
 // ==== SINGLETON CHO RETROFIT ====
 object AiService {
     // Nếu đang test trên Android Emulator, gọi 127.0.0.1 là chính máy => dùng 10.0.2.2 thay thế
-    private const val BASE_URL = "http://10.0.2.2:5000/"
+    //private const val BASE_URL = "http://10.0.2.2:5000/"
+    private const val BASE_URL = "http://192.168.1.15:5000/"
 
     private val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
