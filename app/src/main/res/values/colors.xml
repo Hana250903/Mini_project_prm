@@ -4,4 +4,10 @@
     <color name="white">#FFFFFFFF</color>
     <color name="chatbox_header_color">#4A90E2</color>
     <color name="fab_color">#50E3C2</color>
+
+    <color name="payment_bg_light_pink">#FFF5F7</color>
+    <color name="payment_primary_pink">#FF8FAB</color>
+    <color name="payment_accent_pink">#E91E63</color>
+    <color name="payment_text_primary">#333333</color>
+    <color name="payment_text_secondary">#666666</color>
 </resources>

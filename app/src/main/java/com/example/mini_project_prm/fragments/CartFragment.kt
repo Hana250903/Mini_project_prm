@@ -17,6 +17,7 @@ import com.example.mini_project_prm.models.CartManager
 import com.example.mini_project_prm.zalo_pay.OrderPayment
 import java.text.NumberFormat
 import java.util.Locale
+import android.widget.Toast
 
 class CartFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
@@ -25,24 +26,21 @@ class CartFragment : Fragment() {
     private lateinit var tvTotalPrice: TextView
     private lateinit var btnCheckout: Button
 
+    // Trong file fragments/CartFragment.kt
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_cart, container, false)
 
-        // === PHẦN BẠN CẦN BỔ SUNG ===
         // Ánh xạ các View từ layout
         recyclerView = view.findViewById(R.id.recyclerViewCart)
         tvCartCount = view.findViewById(R.id.tvCartCount)
         tvTotalPrice = view.findViewById(R.id.tvTotalPrice)
         btnCheckout = view.findViewById(R.id.btnCheckout)
-        // ============================
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        // LẤY DỮ LIỆU TỪ CARTMANAGER
         val itemsFromManager = CartManager.getCartItems()
-
         cartAdapter = CartAdapter(itemsFromManager) {
-            // Đây là nơi xử lý khi giỏ hàng được cập nhật từ adapter
             updateCartCount()
             updateTotalPrice()
         }
@@ -51,15 +49,36 @@ class CartFragment : Fragment() {
         updateCartCount()
         updateTotalPrice()
 
+        // === PHẦN ĐÃ ĐƯỢC CẬP NHẬT LOGIC ===
         btnCheckout.setOnClickListener {
             val cartItems = CartManager.getCartItems()
-            val totalItems = cartItems.sumOf { it.quantity } // Giả sử mỗi item có quantity
-            val totalPrice = CartManager.getTotalPrice().toDouble() // Trả về số tiền dạng Int hoặc Long
-            Log.d("CartDebug", "Tổng số lượng: $totalItems, Tổng giá: $totalPrice")
 
-            val intent = Intent(requireContext(), OrderPayment::class.java)
-            intent.putExtra("soluong", "$totalItems sản phẩm")
-            intent.putExtra("total", totalPrice)
+            // Kiểm tra nếu giỏ hàng trống thì không làm gì cả
+            if (cartItems.isEmpty()) {
+                Toast.makeText(requireContext(), "Giỏ hàng của bạn đang trống!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val totalItems = cartItems.sumOf { it.quantity }
+            val totalPrice = CartManager.getTotalPrice()
+
+            // Tạo tên sản phẩm tóm tắt cho màn hình thanh toán
+            val summaryProductName = if (cartItems.size == 1) {
+                // Nếu chỉ có 1 loại sản phẩm, hiện tên của nó
+                cartItems.first().name
+            } else {
+                // Nếu có nhiều loại, hiện tên tóm tắt
+                "Thanh toán cho ${cartItems.size} loại sản phẩm"
+            }
+
+            // Tạo Intent và truyền đầy đủ dữ liệu
+            val intent = Intent(requireContext(), OrderPayment::class.java).apply {
+                putExtra("soluong", totalItems.toString())
+                putExtra("total", totalPrice)
+                // Thêm dữ liệu mới để khớp với UI của OrderPayment
+                putExtra("productName", summaryProductName)
+                putExtra("price", totalPrice) // Giá tạm tính cũng là tổng giá
+            }
             startActivity(intent)
         }
 

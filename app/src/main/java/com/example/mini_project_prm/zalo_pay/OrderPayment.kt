@@ -27,50 +27,65 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import com.google.android.material.appbar.MaterialToolbar // <-- Import Toolbar
 
 class OrderPayment : AppCompatActivity() {
     private lateinit var tvSoluong: TextView
     private lateinit var tvTongTien: TextView
     private lateinit var btnThanhToan: Button
+    private lateinit var tvProductName: TextView // Thêm biến cho tên sản phẩm
+    private lateinit var tvGia: TextView // Thêm biến cho giá
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        // enableEdgeToEdge đã được tích hợp trong theme, không cần gọi lại
         setContentView(R.layout.activity_order_payment)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
 
+        // === BƯỚC 1: XỬ LÝ TOOLBAR MỚI ===
+        val toolbar: MaterialToolbar = findViewById(R.id.toolbar)
+        toolbar.setNavigationOnClickListener {
+            // Khi nhấn nút back, đóng Activity này lại
+            finish()
+        }
+        // ================================
+
+        // Ánh xạ các View
         tvSoluong = findViewById(R.id.tvSoLuong)
         tvTongTien = findViewById(R.id.tvTongTien)
         btnThanhToan = findViewById(R.id.btnThanhToan)
+        tvProductName = findViewById(R.id.tvProductName) // Ánh xạ view mới
+        tvGia = findViewById(R.id.tvGia) // Ánh xạ view mới
 
-        // Cho phép hoạt động trên luồng chính (chỉ dùng cho mục đích dev/test, không khuyến nghị cho production)
+
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
-
-        // ZaloPay SDK Init
-        // Sử dụng AppInfo.APP_ID để đảm bảo tính nhất quán nếu bạn đã chuyển AppInfo sang Kotlin object
         ZaloPaySDK.init(com.example.mini_project_prm.api.AppInfo.APP_ID, Environment.SANDBOX)
 
-        val intent = intent // 'intent' ở đây là Intent mà Activity này được khởi chạy với
+        // Lấy dữ liệu từ Intent
+        val intent = intent
         tvSoluong.text = intent.getStringExtra("soluong")
         val total = intent.getDoubleExtra("total", 0.0)
 
+        // === BƯỚC 2: HIỂN THỊ THÊM THÔNG TIN (NÊN LÀM) ===
+        // Lưu ý: Bạn cần truyền thêm "productName" và "price" vào Intent khi khởi chạy Activity này
+        val productName = intent.getStringExtra("productName") ?: "Sản phẩm"
+        val price = intent.getDoubleExtra("price", 0.0)
+
         val formatter = NumberFormat.getCurrencyInstance(Locale("vi", "VN"))
-        val totalString = String.format("%.0f", total) // Chuỗi số nguyên để gửi đi
-        val totalFormatted = formatter.format(total) // Chuỗi có định dạng tiền tệ để hiển thị
+        tvProductName.text = productName
+        tvGia.text = formatter.format(price)
+        // ===============================================
+
+        val totalString = String.format("%.0f", total)
+        val totalFormatted = formatter.format(total)
         tvTongTien.text = totalFormatted
 
         btnThanhToan.setOnClickListener {
+            // Code xử lý thanh toán của bạn giữ nguyên
             createOrderInDatabase(total) { orderId ->
                 Log.d("Order", "Order ID: $orderId")
                 if (orderId != null) {
                     createOrderItems(orderId)
-
-                    // Gọi ZaloPay sau khi đã lưu DB
                     payWithZaloPay(totalString, totalFormatted)
                 } else {
                     Log.e("Order", "Không tạo được đơn hàng, không thể thanh toán")

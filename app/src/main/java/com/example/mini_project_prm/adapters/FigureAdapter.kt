@@ -9,9 +9,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mini_project_prm.models.Figure
 import com.example.mini_project_prm.R
-import com.example.mini_project_prm.ProductDetailActivity
 import java.text.NumberFormat
 import java.util.Locale
+import androidx.appcompat.app.AppCompatActivity
+import com.example.mini_project_prm.fragments.ProductDetailFragment
 
 class FigureAdapter(
     private var figures: List<Figure> // Đổi private val thành private var
@@ -36,13 +37,17 @@ class FigureAdapter(
 
         holder.itemView.setOnClickListener {
             val context = holder.itemView.context
-            // Tạo một Intent để mở ProductDetailActivity
-            val intent = Intent(context, ProductDetailActivity::class.java).apply {
-                // Đặt đối tượng Figure (đã Parcelable) vào trong Intent
-                putExtra("EXTRA_FIGURE_DATA", figure)
+            // Kiểm tra context có phải là một Activity không
+            if (context is AppCompatActivity) {
+                // Tạo một instance của Fragment mới
+                val detailFragment = ProductDetailFragment.newInstance(figure)
+
+                // Thực hiện việc thay thế Fragment
+                context.supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragmentContainer, detailFragment)
+                    .addToBackStack(null) // <-- Rất quan trọng để nút back hoạt động
+                    .commit()
             }
-            // Bắt đầu Activity mới
-            context.startActivity(intent)
         }
 
     }
