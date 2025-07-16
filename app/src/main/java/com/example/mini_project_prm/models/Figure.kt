@@ -2,10 +2,11 @@ package com.example.mini_project_prm.models
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.parcelize.Parcelize // <-- Import dòng này
+import kotlinx.parcelize.Parcelize
 
-@Parcelize // <-- Thêm annotation này
+@Parcelize
 data class Figure(
+    // Sửa lại cho khớp với JSON: "figureid"
     @SerializedName("figureid")
     val id: Int,
 
@@ -21,6 +22,7 @@ data class Figure(
     @SerializedName("brand")
     val brand: String?,
 
+    // Sửa lại cho khớp với JSON: "releasedate"
     @SerializedName("releasedate")
     val releaseDate: String?,
 
@@ -33,7 +35,8 @@ data class Figure(
     @SerializedName("stock")
     val stock: Int,
 
-    // imageUrl của bạn đang là Int (R.drawable.id), điều này OK
-    @SerializedName("imageUrl")
+    // Sửa lại cho khớp với JSON: "imageurl" và kiểu dữ liệu là String
+    @SerializedName("imageurl")
     val imageUrl: String
-) : Parcelable // <-- Thêm kế thừa này
+
+) : Parcelable

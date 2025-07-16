@@ -33,8 +33,7 @@ interface SupabaseService {
 
     // FIGURE
     @GET("figures")
-    suspend fun getFigures(): List<Figure>
-
+    suspend fun getFigures(): Response<List<Figure>> // <-- SỬA LẠI THÀNH Response<List<Figure>>
     // ORDER
     @GET("orders?userid=eq.{id}")
     suspend fun getOrders(): List<Order>

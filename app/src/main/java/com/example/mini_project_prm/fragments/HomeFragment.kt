@@ -3,7 +3,6 @@ package com.example.mini_project_prm.fragments
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +12,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,17 +24,13 @@ import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
 
-    // HÃY CHẮC CHẮN BẠN CÓ ĐẦY ĐỦ 6 DÒNG KHAI BÁO NÀY.
-    // BẠN ĐANG THIẾU DÒNG KHAI BÁO "sortSpinner".
-
     private lateinit var recyclerView: RecyclerView
     private lateinit var figureAdapter: FigureAdapter
     private lateinit var searchBox: EditText
-    private lateinit var sortSpinner: Spinner  // <-- DÒNG NÀY SẼ SỬA LỖI CỦA BẠN
+    private lateinit var sortSpinner: Spinner
+
     private var originalFigureList: List<Figure> = emptyList()
     private var currentSortPosition = 0
-
-    // ... các hàm onCreateView, onViewCreated... của bạn bắt đầu từ đây
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -56,20 +52,23 @@ class HomeFragment : Fragment() {
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
         recyclerView.setHasFixedSize(true)
 
-        // Khởi tạo dữ liệu và Adapter
-        fetchFiguresFromApi()
-        figureAdapter = FigureAdapter(originalFigureList)
+        // === THAY ĐỔI THỨ TỰ KHỞI TẠO ===
+        // 1. Khởi tạo Adapter với một danh sách rỗng trước
+        figureAdapter = FigureAdapter(emptyList())
         recyclerView.adapter = figureAdapter
 
-        // Gọi hàm thiết lập listener
+        // 2. Thiết lập các listener
         setupSortSpinner()
         setupSearchListener()
+
+        // 3. Gọi API để lấy dữ liệu và cập nhật Adapter sau
+        fetchFiguresFromApi()
     }
 
     private fun setupSortSpinner() {
         ArrayAdapter.createFromResource(
             requireContext(),
-            R.array.sort_options, // Dòng này sẽ hết lỗi sau khi bạn tạo arrays.xml
+            R.array.sort_options,
             android.R.layout.simple_spinner_item
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -116,14 +115,23 @@ class HomeFragment : Fragment() {
     }
 
     private fun fetchFiguresFromApi() {
+        // Hiển thị một cái gì đó cho người dùng biết đang tải (tùy chọn)
         lifecycleScope.launch {
             try {
                 val response = RetrofitClient.instance.getFigures()
-                originalFigureList = response
-                figureAdapter.updateData(originalFigureList)
+                // XỬ LÝ KẾT QUẢ API AN TOÀN HƠN
+                if (response.isSuccessful) {
+                    response.body()?.let { figuresFromApi ->
+                        originalFigureList = figuresFromApi
+                        // Cập nhật lại giao diện với dữ liệu đầy đủ
+                        filterAndSort(searchBox.text.toString())
+                    }
+                } else {
+                    Toast.makeText(requireContext(), "Lỗi tải dữ liệu: ${response.message()}", Toast.LENGTH_LONG).show()
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
-                Toast.makeText(requireContext(), "Lỗi khi tải dữ liệu: ${e.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), "Lỗi kết nối: ${e.message}", Toast.LENGTH_LONG).show()
             }
         }
     }
