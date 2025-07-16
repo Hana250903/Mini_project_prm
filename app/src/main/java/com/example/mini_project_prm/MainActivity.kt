@@ -206,7 +206,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupClickListeners() {
         imgUser.setOnClickListener {
-            loadFragment(UserInfoFragment())
+            val userId = intent.getIntExtra("userid", -1)
+            val email = intent.getStringExtra("email") ?: ""
+            val fullName = intent.getStringExtra("fullName") ?: ""
+
+            val userInfoFragment = UserInfoFragment.newInstance(userId, fullName, email)
+            loadFragment(userInfoFragment)
         }
         // Dòng xử lý click cho imgCategory đã được xóa bỏ
     }
