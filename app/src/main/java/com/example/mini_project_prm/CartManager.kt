@@ -13,24 +13,26 @@ object CartManager {
         return cartItems
     }
 
-    // Hàm để thêm sản phẩm vào giỏ
+// trong file models/CartManager.kt
+
+    // Hàm này sẽ tạo ra CartItem "phẳng" từ một đối tượng Figure
     fun addItem(figure: Figure, quantity: Int = 1) {
-        // Kiểm tra xem sản phẩm đã có trong giỏ chưa
+        // Tìm xem sản phẩm đã có trong giỏ chưa qua figure.id
         val existingItem = cartItems.find { it.figureId == figure.id }
 
         if (existingItem != null) {
             // Nếu có rồi thì chỉ tăng số lượng
             existingItem.quantity += quantity
         } else {
-            // Nếu chưa có thì tạo CartItem mới và thêm vào danh sách
+            // Nếu chưa có, tạo CartItem mới từ thông tin của Figure
             val cartItem = CartItem(
-                figureId = figure.id,
                 name = figure.name,
                 description = figure.description,
-                priceSale = figure.price, // Giả sử giá bán bằng giá gốc
-                priceOriginal = figure.price * 1.1, // Giả sử giá gốc cao hơn 10%
+                priceSale = figure.price,
+                priceOriginal = figure.price, // Tạm thời để giá gốc bằng giá bán
+                quantity = quantity,
                 imageUrl = figure.imageUrl,
-                quantity = quantity
+                figureId = figure.id
             )
             cartItems.add(cartItem)
         }

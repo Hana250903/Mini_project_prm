@@ -28,12 +28,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
-            android:textStyle="bold"
-            android:textSize="16sp"
             android:textColor="@android:color/black"
-            app:layout_constraintTop_toTopOf="@id/imgProduct"
-            app:layout_constraintStart_toEndOf="@id/imgProduct"
+            android:textSize="16sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/imgProduct"
+            app:layout_constraintTop_toTopOf="@id/imgProduct"
             tools:text="Tên sản phẩm Figure dài ơi là dài để test xuống dòng" />
 
         <TextView
@@ -42,9 +42,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:textSize="14sp"
-            app:layout_constraintTop_toBottomOf="@id/tvName"
-            app:layout_constraintStart_toStartOf="@id/tvName"
             app:layout_constraintEnd_toEndOf="@id/tvName"
+            app:layout_constraintStart_toStartOf="@id/tvName"
+            app:layout_constraintTop_toBottomOf="@id/tvName"
             tools:text="Tặng kèm 01 card trong suốt" />
 
         <TextView
@@ -52,11 +52,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:textColor="#E53935"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="#E53935"
-            app:layout_constraintTop_toBottomOf="@id/tvDescription"
             app:layout_constraintStart_toStartOf="@id/tvName"
+            app:layout_constraintTop_toBottomOf="@id/tvDescription"
             tools:text="1.550.000đ" />
 
         <TextView
@@ -74,12 +74,12 @@
             android:id="@+id/tvDelete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="8dp"
             android:text="Xóa"
             android:textColor="#007BFF"
             android:textStyle="bold"
-            android:padding="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/quantityLayout" />
+            app:layout_constraintBottom_toBottomOf="@id/quantityLayout"
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <LinearLayout
             android:id="@+id/quantityLayout"
@@ -91,12 +91,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/imgProduct">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnDecrease"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:text="-"
-                tools:ignore="TouchTargetSizeCheck" />
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                app:icon="@drawable/ic_remove"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.App.Button.Circle" />
 
             <TextView
                 android:id="@+id/tvQuantity"
@@ -107,12 +110,15 @@
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnIncrease"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:text="+"
-                tools:ignore="TouchTargetSizeCheck" />
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                app:icon="@drawable/ic_add"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.App.Button.Circle" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

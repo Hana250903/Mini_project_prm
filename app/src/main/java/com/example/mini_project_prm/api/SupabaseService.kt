@@ -47,7 +47,10 @@ interface SupabaseService {
 
     // ORDER ITEM
     @GET("orderitems")
-    suspend fun getOrderItemByOrderId(@Query("orderid") orderId: String): List<OrderItem>
+    suspend fun getOrderItemByOrderId(
+        @Query("orderid") orderId: String,
+        @Query("select") select: String = "*,figures(*)" // <-- KIỂM TRA TÊN BẢNG Ở ĐÂY
+    ): Response<List<OrderItem>>
 
     @POST("orderitems")
     suspend fun createOrderItem(@Body item: OrderItem): Response<Unit>

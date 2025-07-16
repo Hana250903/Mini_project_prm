@@ -125,21 +125,23 @@ class OrderPayment : AppCompatActivity() {
     }
 
 
+// trong file zalo_pay/OrderPayment.kt
+
     private fun createOrderItems(orderId: Int) {
         val cartItems = CartManager.getCartItems()
         lifecycleScope.launch {
             cartItems.forEach { item ->
+                // Tạo đối tượng OrderItem đơn giản hơn, không cần 'figure' hay 'imageResId'
                 val orderItem = OrderItem(
                     orderId = orderId,
-                    figureId = item.figureId, // đảm bảo CartItem có figureId
+                    figureId = item.figureId,
                     quantity = item.quantity,
-                    unitPrice = item.priceSale,
-                    imageResId = item.imageUrl
+                    unitPrice = item.priceSale
                 )
                 try {
                     val response = RetrofitClient.instance.createOrderItem(orderItem)
                     if (response.isSuccessful) {
-                        Log.d("OrderItem", "Item saved")
+                        Log.d("OrderItem", "Item saved for order $orderId")
                     } else {
                         Log.e("OrderItem", "Failed to save item: ${response.code()}")
                     }
