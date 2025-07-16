@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
+import coil.load
 import com.example.mini_project_prm.R
 import com.example.mini_project_prm.models.CartManager
 import com.example.mini_project_prm.models.Figure
@@ -64,7 +65,11 @@ class ProductDetailFragment : Fragment() {
         val tvProductDescription: TextView = view.findViewById(R.id.tvProductDescription)
 
         // Hiển thị dữ liệu lên UI
-        ivProductImage.setImageResource(figure.imageUrl)
+        ivProductImage.load(figure.imageUrl) {
+            crossfade(true)
+            placeholder(android.R.drawable.ic_menu_report_image)
+            error(android.R.drawable.stat_notify_error)
+        }
         tvProductName.text = figure.name
         val formattedPrice = NumberFormat.getNumberInstance(Locale("vi", "VN")).format(figure.price)
         tvProductPrice.text = "${formattedPrice}đ"

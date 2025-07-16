@@ -6,6 +6,6 @@ data class CartItem(
     val priceSale: Double,
     val priceOriginal: Double,
     var quantity: Int,
-    val imageUrl: Int,
+    val imageUrl: String,
     val figureId: Int = -1
 )

@@ -35,5 +35,5 @@ data class Figure(
 
     // imageUrl của bạn đang là Int (R.drawable.id), điều này OK
     @SerializedName("imageUrl")
-    val imageUrl: Int
+    val imageUrl: String
 ) : Parcelable // <-- Thêm kế thừa này

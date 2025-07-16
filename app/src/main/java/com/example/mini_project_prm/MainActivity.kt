@@ -18,10 +18,16 @@ import com.example.mini_project_prm.fragments.UserInfoFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View.OnTouchListener
 import android.widget.Toast
 import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.mini_project_prm.adapters.ChatAdapter
+import com.example.mini_project_prm.api.AiService
+import com.example.mini_project_prm.models.ChatMessage
 import com.google.android.material.chip.Chip
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
@@ -34,6 +40,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var fabChat: FloatingActionButton
     private lateinit var chatboxView: CardView
     private var isChatboxOpen = false
+
+    private lateinit var chatAdapter: ChatAdapter
+    private lateinit var rvChatMessages: RecyclerView
+    private val chatMessages = mutableListOf<ChatMessage>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +71,12 @@ class MainActivity : AppCompatActivity() {
         imgCategory = findViewById(R.id.imgCategory)
         fabChat = findViewById(R.id.fab_chat)
         chatboxView = findViewById(R.id.chatbox_view)
+
+        rvChatMessages = findViewById(R.id.rv_chat_messages)
+        chatAdapter = ChatAdapter(chatMessages)
+        rvChatMessages.adapter = chatAdapter
+        rvChatMessages.setHasFixedSize(true)
+        rvChatMessages.layoutManager = LinearLayoutManager(this)
 
         setupChatbox()
 
@@ -181,11 +197,24 @@ class MainActivity : AppCompatActivity() {
 
     // Hàm mới để xử lý khi người dùng chọn option
     private fun sendQuickReply(text: String) {
-        // Tạm thời chỉ hiển thị Toast
-        Toast.makeText(this, "Bạn đã chọn: $text", Toast.LENGTH_SHORT).show()
+        chatAdapter.addMessage(ChatMessage(text, true)) // user message
+        rvChatMessages.scrollToPosition(chatMessages.size - 1)
 
-        // TODO: Gửi `text` này đến AI của bạn để xử lý
-        // Sau đó nhận kết quả và hiển thị lên RecyclerView (rv_chat_messages)
+        AiService.sendQuestion(
+            userInput = text,
+            onSuccess = { answer ->
+                runOnUiThread {
+                    chatAdapter.addMessage(ChatMessage(answer, false)) // AI response
+                    rvChatMessages.scrollToPosition(chatMessages.size - 1)
+                }
+            },
+            onError = { error ->
+                runOnUiThread {
+                    chatAdapter.addMessage(ChatMessage("Lỗi: $error", false))
+                    rvChatMessages.scrollToPosition(chatMessages.size - 1)
+                }
+            }
+        )
     }
 
     private fun loadTopBarImages() {

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.example.mini_project_prm.models.Figure
 import com.example.mini_project_prm.R
 import java.text.NumberFormat
@@ -30,7 +31,11 @@ class FigureAdapter(
 
     override fun onBindViewHolder(holder: FigureViewHolder, position: Int) {
         val figure = figures[position]
-        holder.imgFigure.setImageResource(figure.imageUrl)
+        holder.imgFigure.load(figure.imageUrl) {
+            crossfade(true)
+            placeholder(android.R.drawable.ic_menu_report_image)
+            error(android.R.drawable.stat_notify_error)
+        }
         holder.textName.text = figure.name
         val formattedPrice = NumberFormat.getNumberInstance(Locale("vi", "VN")).format(figure.price)
         holder.price.text = "${formattedPrice}đ"

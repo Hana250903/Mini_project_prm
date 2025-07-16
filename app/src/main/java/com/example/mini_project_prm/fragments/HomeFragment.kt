@@ -12,11 +12,15 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Spinner
+import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mini_project_prm.R
 import com.example.mini_project_prm.adapters.FigureAdapter
+import com.example.mini_project_prm.api.RetrofitClient
 import com.example.mini_project_prm.models.Figure
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
 
@@ -53,7 +57,7 @@ class HomeFragment : Fragment() {
         recyclerView.setHasFixedSize(true)
 
         // Khởi tạo dữ liệu và Adapter
-        originalFigureList = createDummyData()
+        fetchFiguresFromApi()
         figureAdapter = FigureAdapter(originalFigureList)
         recyclerView.adapter = figureAdapter
 
@@ -111,14 +115,16 @@ class HomeFragment : Fragment() {
         figureAdapter.updateData(sortedList)
     }
 
-    private fun createDummyData(): List<Figure> {
-        return listOf(
-            Figure(id = 1, name = "Tokisaki Kurumi Nightwear ver. Desktop Cute - Date A Live V | Taito Figure.", description = "Mô hình Tokisaki Kurumi...", price = 490000.0, brand = "Taito", releaseDate = "2024-10-01", category = "Desktop Cute", series = "Date A Live V", stock = 15, imageUrl = R.drawable.kurumi),
-            Figure(id = 2, name = "Sakurajima Mai Bunny Girl Ver. Artist MasterPiece AMP+ - Bunny Girl Senpai | TAITO Figure", description = "Phiên bản đặc biệt Artist MasterPiece+...", price = 450000.0, brand = "Taito", releaseDate = "2024-08-15", category = "AMP+", series = "Bunny Girl Senpai", stock = 10, imageUrl = R.drawable.mai),
-            Figure(id = 3, name = "Nendoroid 1979 Hoshimachi Suisei - Hololive | Good Smile Company Figure", description = "Nendoroid đáng yêu của VTuber Hoshimachi Suisei...", price = 1350000.0, brand = "Good Smile Company", releaseDate = "2025-01-20", category = "Nendoroid", series = "Hololive", stock = 5, imageUrl = R.drawable.suisei),
-            Figure(id = 4, name = "Nakano Miku Bloo-me - Gotoubun no Hanayome | FuRyu Figure", description = "Mô hình Nakano Miku trong dòng sản phẩm Bloo-me...", price = 490000.0, brand = "FuRyu", releaseDate = "2024-11-30", category = "Scale Figure", series = "Gotoubun no Hanayome", stock = 12, imageUrl = R.drawable.nakano_miku),
-            Figure(id = 5, name = "Ainz Ooal Gown - Overlord | Bandai Spirits Figure", description = "Mô hình mạnh mẽ và uy nghi của Ainz Ooal Gown...", price = 690000.0, brand = "Bandai Spirits", releaseDate = "2024-12-10", category = "Scale Figure", series = "Overlord", stock = 8, imageUrl = R.drawable.ainz_ooal_gown),
-            Figure(id = 6, name = "Nendoroid 1688 Gawr Gura - hololive production | Good Smile Company Figure", description = "Nendoroid 'cá mập' Gawr Gura siêu cấp đáng yêu...", price = 2450000.0, brand = "Good Smile Company", releaseDate = "2024-09-01", category = "Nendoroid", series = "Hololive", stock = 3, imageUrl = R.drawable.gawr_gura)
-        )
+    private fun fetchFiguresFromApi() {
+        lifecycleScope.launch {
+            try {
+                val response = RetrofitClient.instance.getFigures()
+                originalFigureList = response
+                figureAdapter.updateData(originalFigureList)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toast.makeText(requireContext(), "Lỗi khi tải dữ liệu: ${e.message}", Toast.LENGTH_LONG).show()
+            }
+        }
     }
 }

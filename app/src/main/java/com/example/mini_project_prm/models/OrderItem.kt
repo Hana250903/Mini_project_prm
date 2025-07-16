@@ -19,5 +19,5 @@ data class OrderItem(
     val unitPrice: Double,
 
     @SerializedName("imageResId")
-    val imageResId: Int
+    val imageResId: String
 )

@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.example.mini_project_prm.R
 import com.example.mini_project_prm.models.CartItem
 import com.example.mini_project_prm.models.CartManager // Import CartManager
@@ -40,7 +41,11 @@ class CartAdapter(
         val item = cartItems[position]
 
         // Phần hiển thị dữ liệu đã đúng, không cần sửa
-        holder.imgProduct.setImageResource(item.imageUrl)
+        holder.imgProduct.load(item.imageUrl) {
+            crossfade(true)
+            placeholder(android.R.drawable.ic_menu_report_image)
+            error(android.R.drawable.stat_notify_error)
+        }
         holder.tvName.text = item.name
         holder.tvDescription.text = item.description
         val formattedPriceSale = NumberFormat.getNumberInstance(Locale("vi", "VN")).format(item.priceSale)
