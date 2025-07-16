@@ -35,8 +35,8 @@ interface SupabaseService {
     @GET("figures")
     suspend fun getFigures(): Response<List<Figure>> // <-- SỬA LẠI THÀNH Response<List<Figure>>
     // ORDER
-    @GET("orders?userid=eq.{id}")
-    suspend fun getOrders(): List<Order>
+    @GET("orders")
+    suspend fun getOrderById(@Query("userid") userId: String): List<Order>
 
     @POST("orders")
     @Headers("Prefer: return=representation")
@@ -46,8 +46,8 @@ interface SupabaseService {
     suspend fun updateOrder(@Path("id") id: Int, @Body order: Order): Response<Unit>
 
     // ORDER ITEM
-    @GET("orderitems?orderid=eq.{id}")
-    suspend fun getOrderItems(@Path("id") id: Int): List<OrderItem>
+    @GET("orderitems")
+    suspend fun getOrderItemByOrderId(@Query("orderid") orderId: String): List<OrderItem>
 
     @POST("orderitems")
     suspend fun createOrderItem(@Body item: OrderItem): Response<Unit>
