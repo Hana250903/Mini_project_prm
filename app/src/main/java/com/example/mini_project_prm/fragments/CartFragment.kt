@@ -18,6 +18,7 @@ import com.example.mini_project_prm.zalo_pay.OrderPayment
 import java.text.NumberFormat
 import java.util.Locale
 import android.widget.Toast
+import com.example.mini_project_prm.models.CartItem
 
 class CartFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
@@ -26,7 +27,18 @@ class CartFragment : Fragment() {
     private lateinit var tvTotalPrice: TextView
     private lateinit var btnCheckout: Button
 
-    // Trong file fragments/CartFragment.kt
+    private var userId: Int = -1
+
+    companion object {
+        fun newInstance(userId: Int): CartFragment {
+            val fragment = CartFragment()
+            val args = Bundle().apply {
+                putInt("userId", userId)
+            }
+            fragment.arguments = args
+            return fragment
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_cart, container, false)
@@ -36,6 +48,8 @@ class CartFragment : Fragment() {
         tvCartCount = view.findViewById(R.id.tvCartCount)
         tvTotalPrice = view.findViewById(R.id.tvTotalPrice)
         btnCheckout = view.findViewById(R.id.btnCheckout)
+
+        userId = arguments?.getInt("userId", -1) ?: -1
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
@@ -49,7 +63,6 @@ class CartFragment : Fragment() {
         updateCartCount()
         updateTotalPrice()
 
-        // === PHẦN ĐÃ ĐƯỢC CẬP NHẬT LOGIC ===
         btnCheckout.setOnClickListener {
             val cartItems = CartManager.getCartItems()
 
@@ -78,6 +91,7 @@ class CartFragment : Fragment() {
                 // Thêm dữ liệu mới để khớp với UI của OrderPayment
                 putExtra("productName", summaryProductName)
                 putExtra("price", totalPrice) // Giá tạm tính cũng là tổng giá
+                putExtra("userId", userId)
             }
             startActivity(intent)
         }
@@ -93,14 +107,5 @@ class CartFragment : Fragment() {
         val total = CartManager.getTotalPrice() // Lấy tổng giá từ Manager
         val formattedPrice = NumberFormat.getNumberInstance(Locale("vi", "VN")).format(total)
         tvTotalPrice.text = "${formattedPrice}đ"
-    }
-
-    // Thêm hàm onResume để giỏ hàng luôn được cập nhật khi quay lại tab này
-    override fun onResume() {
-        super.onResume()
-        // Cập nhật lại danh sách và giao diện
-        cartAdapter.notifyDataSetChanged()
-        updateCartCount()
-        updateTotalPrice()
     }
 }

@@ -38,16 +38,12 @@ class OrderPayment : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // enableEdgeToEdge đã được tích hợp trong theme, không cần gọi lại
         setContentView(R.layout.activity_order_payment)
 
-        // === BƯỚC 1: XỬ LÝ TOOLBAR MỚI ===
         val toolbar: MaterialToolbar = findViewById(R.id.toolbar)
         toolbar.setNavigationOnClickListener {
-            // Khi nhấn nút back, đóng Activity này lại
             finish()
         }
-        // ================================
 
         // Ánh xạ các View
         tvSoluong = findViewById(R.id.tvSoLuong)
@@ -56,33 +52,30 @@ class OrderPayment : AppCompatActivity() {
         tvProductName = findViewById(R.id.tvProductName) // Ánh xạ view mới
         tvGia = findViewById(R.id.tvGia) // Ánh xạ view mới
 
-
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
         ZaloPaySDK.init(com.example.mini_project_prm.api.AppInfo.APP_ID, Environment.SANDBOX)
 
-        // Lấy dữ liệu từ Intent
         val intent = intent
         tvSoluong.text = intent.getStringExtra("soluong")
+        val userId = intent.getIntExtra("userId", 0)
         val total = intent.getDoubleExtra("total", 0.0)
 
-        // === BƯỚC 2: HIỂN THỊ THÊM THÔNG TIN (NÊN LÀM) ===
-        // Lưu ý: Bạn cần truyền thêm "productName" và "price" vào Intent khi khởi chạy Activity này
+        //truyền thêm "productName" và "price" vào Intent khi khởi chạy Activity này
         val productName = intent.getStringExtra("productName") ?: "Sản phẩm"
         val price = intent.getDoubleExtra("price", 0.0)
 
         val formatter = NumberFormat.getCurrencyInstance(Locale("vi", "VN"))
         tvProductName.text = productName
         tvGia.text = formatter.format(price)
-        // ===============================================
 
         val totalString = String.format("%.0f", total)
         val totalFormatted = formatter.format(total)
         tvTongTien.text = totalFormatted
 
         btnThanhToan.setOnClickListener {
-            // Code xử lý thanh toán của bạn giữ nguyên
-            createOrderInDatabase(total) { orderId ->
+            // xử lý thanh toán
+            createOrderInDatabase(total, userId) { orderId ->
                 Log.d("Order", "Order ID: $orderId")
                 if (orderId != null) {
                     createOrderItems(orderId)
@@ -94,12 +87,12 @@ class OrderPayment : AppCompatActivity() {
         }
     }
 
-    private fun createOrderInDatabase(total: Double, onComplete: (Int?) -> Unit) {
+    private fun createOrderInDatabase(total: Double, userId: Int, onComplete: (Int?) -> Unit) {
         val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
         val currentDate = sdf.format(Date())
 
         val order = Order(
-            userId = 1,
+            userId = userId,
             orderDate = currentDate,
             totalAmount = total,
             status = "Pending"

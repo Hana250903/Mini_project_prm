@@ -20,6 +20,19 @@ class PurchaseHistoryFragment : Fragment() {
     private lateinit var orderAdapter: OrderAdapter
     private var orders: List<Order> = emptyList()
 
+    private var userId: Int = -1
+
+    companion object {
+        fun newInstance(userId: Int): PurchaseHistoryFragment {
+            val fragment = PurchaseHistoryFragment()
+            val args = Bundle().apply {
+                putInt("userId", userId)
+            }
+            fragment.arguments = args
+            return fragment
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -30,6 +43,8 @@ class PurchaseHistoryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        userId = arguments?.getInt("userId", -1) ?: -1
+
         recyclerView = view.findViewById(R.id.recyclerViewOrders)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
@@ -37,8 +52,6 @@ class PurchaseHistoryFragment : Fragment() {
     }
 
     private fun fetchOrders() {
-        val userId = 1 // <-- Thay bằng ID thực tế của user đã đăng nhập
-
         lifecycleScope.launch {
             try {
                 val response = RetrofitClient.instance.getOrderById("eq.${userId}")

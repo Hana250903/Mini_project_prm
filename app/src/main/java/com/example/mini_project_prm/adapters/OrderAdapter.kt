@@ -20,7 +20,7 @@ import java.util.Locale
 import android.util.Log // <-- Thêm import này
 
 class OrderAdapter(
-    private val orders: List<Order>,
+    private var orders: List<Order>,
     private val scope: CoroutineScope
 ) : RecyclerView.Adapter<OrderAdapter.OrderViewHolder>() {
 
@@ -140,5 +140,10 @@ class OrderAdapter(
         } catch (e: Exception) {
             dateString ?: "N/A"
         }
+    }
+
+    fun updateItems(newItems: List<Order>) {
+        this.orders = newItems
+        notifyDataSetChanged()
     }
 }

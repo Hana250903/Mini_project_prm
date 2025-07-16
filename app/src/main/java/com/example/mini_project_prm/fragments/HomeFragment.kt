@@ -52,16 +52,15 @@ class HomeFragment : Fragment() {
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
         recyclerView.setHasFixedSize(true)
 
-        // === THAY ĐỔI THỨ TỰ KHỞI TẠO ===
-        // 1. Khởi tạo Adapter với một danh sách rỗng trước
+        // Khởi tạo Adapter với một danh sách rỗng trước
         figureAdapter = FigureAdapter(emptyList())
         recyclerView.adapter = figureAdapter
 
-        // 2. Thiết lập các listener
+        // Thiết lập các listener
         setupSortSpinner()
         setupSearchListener()
 
-        // 3. Gọi API để lấy dữ liệu và cập nhật Adapter sau
+        // Gọi API để lấy dữ liệu và cập nhật Adapter sau
         fetchFiguresFromApi()
     }
 

@@ -38,26 +38,19 @@ class CategoryFragment : Fragment() {
         fetchFigures()
     }
 
-    // === SỬA LẠI HÀM NÀY ===
     private fun fetchFigures() {
         lifecycleScope.launch {
             try {
-                // 1. Nhận về đối tượng Response
                 val response = RetrofitClient.instance.getFigures()
 
-                // 2. Kiểm tra xem cuộc gọi có thành công không
                 if (response.isSuccessful) {
-                    // 3. Mở hộp và lấy danh sách figures (nếu không null)
                     response.body()?.let { figuresFromApi ->
-                        // 4. Cập nhật dữ liệu cho adapter
                         adapter.updateData(figuresFromApi)
                     }
                 } else {
-                    // Xử lý trường hợp API trả về lỗi (vd: 404, 500)
                     Toast.makeText(requireContext(), "Lỗi tải dữ liệu: ${response.message()}", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
-                // Xử lý lỗi kết nối mạng
                 e.printStackTrace()
                 Toast.makeText(requireContext(), "Lỗi kết nối: ${e.message}", Toast.LENGTH_SHORT).show()
             }

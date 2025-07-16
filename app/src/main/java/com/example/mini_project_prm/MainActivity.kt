@@ -242,15 +242,16 @@ class MainActivity : AppCompatActivity() {
             val userInfoFragment = UserInfoFragment.newInstance(userId, fullName, email)
             loadFragment(userInfoFragment)
         }
-        // Dòng xử lý click cho imgCategory đã được xóa bỏ
     }
 
     private fun setupBottomNavigation() {
         bottomNavigationView.setOnItemSelectedListener { item ->
-            val fragment: Fragment = when (item.itemId) {
+            val userId = intent.getIntExtra("userid", -1)
+
+            val fragment = when (item.itemId) {
                 R.id.nav_home -> HomeFragment()
-                R.id.nav_cart -> CartFragment()
-                R.id.nav_history -> PurchaseHistoryFragment() // Xử lý cho Lịch sử
+                R.id.nav_cart -> CartFragment.newInstance(userId)
+                R.id.nav_history -> PurchaseHistoryFragment.newInstance(userId)
                 else -> return@setOnItemSelectedListener false
             }
             loadFragment(fragment)

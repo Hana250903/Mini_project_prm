@@ -13,4 +13,8 @@
         android:id="@+id/userInfoFragment"
         android:name="com.example.mini_project_prm.fragments.UserInfoFragment"
         android:label="User Info" />
+<!--    <fragment-->
+<!--        android:id="@+id/cartFragment"-->
+<!--        android:name="com.example.mini_project_prm.fragments.CartFragment"-->
+<!--        android:label="Cart"/>-->
 </navigation>

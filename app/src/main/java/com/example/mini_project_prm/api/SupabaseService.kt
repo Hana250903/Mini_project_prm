@@ -53,7 +53,7 @@ interface SupabaseService {
     )
     suspend fun updateOrder(
         @Query("orderid") orderId: String,
-        @Body updateBody: Map<String, Any>
+        @Body updateBody: Map<String, String>
     ): Response<Unit>
 
     // ORDER ITEM
