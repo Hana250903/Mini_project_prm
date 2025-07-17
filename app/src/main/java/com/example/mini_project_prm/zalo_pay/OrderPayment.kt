@@ -129,7 +129,8 @@ class OrderPayment : AppCompatActivity() {
                     orderId = orderId,
                     figureId = item.figureId,
                     quantity = item.quantity,
-                    unitPrice = item.priceSale
+                    unitPrice = item.priceSale,
+                    imageResId = item.imageUrl
                 )
                 try {
                     val response = RetrofitClient.instance.createOrderItem(orderItem)
