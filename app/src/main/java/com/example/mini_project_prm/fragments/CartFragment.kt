@@ -54,7 +54,11 @@ class CartFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         val itemsFromManager = CartManager.getCartItems()
+
         cartAdapter = CartAdapter(itemsFromManager) {
+            // Đây là nơi xử lý khi giỏ hàng được cập nhật từ adapter
+            // Ta sẽ gọi lại các hàm cập nhật giống như trong onResume
+            this.cartAdapter.notifyDataSetChanged() // <-- Thêm dòng này để vẽ lại danh sách
             updateCartCount()
             updateTotalPrice()
         }
