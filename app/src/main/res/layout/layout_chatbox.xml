@@ -88,6 +88,27 @@
                     android:layout_height="wrap_content"
                     android:text="Tìm theo series" />
 
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_option_4"
+                    style="@style/Widget.MaterialComponents.Chip.Action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Figure Genshin hiện tại" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_option_5"
+                    style="@style/Widget.MaterialComponents.Chip.Action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Figure limit hiện tại" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_option_6"
+                    style="@style/Widget.MaterialComponents.Chip.Action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Figure giá cao nhất" />
+
             </com.google.android.material.chip.ChipGroup>
         </HorizontalScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
