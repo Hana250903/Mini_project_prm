@@ -1,5 +1,6 @@
 package com.example.mini_project_prm.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,8 +20,6 @@ class PurchaseHistoryFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var orderAdapter: OrderAdapter
     private var orders: List<Order> = emptyList()
-
-    private var userId: Int = -1
 
     companion object {
         fun newInstance(userId: Int): PurchaseHistoryFragment {
@@ -43,15 +42,16 @@ class PurchaseHistoryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        userId = arguments?.getInt("userId", -1) ?: -1
+        val sharedPref = requireContext().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        val userId = sharedPref.getInt("userId", -1)
 
         recyclerView = view.findViewById(R.id.recyclerViewOrders)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        fetchOrders()
+        fetchOrders(userId)
     }
 
-    private fun fetchOrders() {
+    private fun fetchOrders(userId: Int) {
         lifecycleScope.launch {
             try {
                 val response = RetrofitClient.instance.getOrderById("eq.${userId}")

@@ -184,7 +184,9 @@ class LoginActivity : AppCompatActivity() {
 
     private fun navigateToMain(userid: Int, email: String, fullName: String) {
         val sharedPref = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-        sharedPref.edit().putInt("userId", userid).apply()
+        val editor = sharedPref.edit()
+        editor.putInt("userId", userid)
+        editor.apply() // hoặc .commit()
 
         val intent = Intent(this, MainActivity::class.java)
         intent.putExtra("userid", userid)
