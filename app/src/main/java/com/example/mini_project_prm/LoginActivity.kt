@@ -93,7 +93,12 @@ class LoginActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         val account = GoogleSignIn.getLastSignedInAccount(this)
-        updateUI(account)
+        if (account != null) {
+            // Người dùng đã đăng nhập → tự động xử lý đăng nhập với Supabase
+            handleLoginWithSupabase(account)
+        } else {
+            updateUI(null)
+        }
     }
 
     private fun signInWithGoogle() {
@@ -178,6 +183,9 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun navigateToMain(userid: Int, email: String, fullName: String) {
+        val sharedPref = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+        sharedPref.edit().putInt("userId", userid).apply()
+
         val intent = Intent(this, MainActivity::class.java)
         intent.putExtra("userid", userid)
         intent.putExtra("email", email)

@@ -57,6 +57,11 @@ class PaymentNotification : AppCompatActivity() {
         tvNotify.text = result ?: "Không có thông báo"
         tvTotal.text = totalText ?: ""
 
+        // ✅ Lấy userId từ SharedPreferences
+        val sharedPref = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+        val userId = sharedPref.getInt("userId", -1)
+        Log.d("USER_ID", "userId = $userId")
+
         when (result) {
             "Thanh toán thành công" -> {
                 imgPaymentStatus.setImageResource(R.drawable.ic_success)
@@ -77,9 +82,13 @@ class PaymentNotification : AppCompatActivity() {
 
     private fun setupButtonListener() {
         btnReturn.setOnClickListener {
+            val sharedPref = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+            val userId = sharedPref.getInt("userId", -1)
+
             val intentReturn = Intent(this.applicationContext, MainActivity::class.java)
+            intentReturn.putExtra("userId", userId)
             startActivity(intentReturn)
-            finish() // Tùy chọn: Kết thúc Activity hiện tại để người dùng không thể quay lại bằng nút Back
+            finish()
         }
     }
 
