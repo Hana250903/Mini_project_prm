@@ -155,6 +155,9 @@ class OrderPayment : AppCompatActivity() {
                 val token = data.getString("zp_trans_token")
                 ZaloPaySDK.getInstance().payOrder(this@OrderPayment, token, "demozpdk://app", object : PayOrderListener {
                     override fun onPaymentSucceeded(transactionId: String, transToken: String, appTransID: String) {
+
+                        CartManager.clearCart()
+
                         val intent1 = Intent(this@OrderPayment, PaymentNotification::class.java)
                         intent1.putExtra("result", "Thanh toán thành công")
                         intent1.putExtra("total", "Bạn đã thanh toán $totalFormatted")

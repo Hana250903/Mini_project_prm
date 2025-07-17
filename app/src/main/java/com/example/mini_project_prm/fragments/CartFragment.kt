@@ -58,7 +58,7 @@ class CartFragment : Fragment() {
         cartAdapter = CartAdapter(itemsFromManager) {
             // Đây là nơi xử lý khi giỏ hàng được cập nhật từ adapter
             // Ta sẽ gọi lại các hàm cập nhật giống như trong onResume
-            this.cartAdapter.notifyDataSetChanged() // <-- Thêm dòng này để vẽ lại danh sách
+            this.cartAdapter.notifyDataSetChanged()
             updateCartCount()
             updateTotalPrice()
         }
