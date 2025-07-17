@@ -5,42 +5,125 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
+    android:background="@color/login_background_pink"
     tools:context=".LoginActivity">
 
-    <TextView
-        android:id="@+id/tv_auth_title"
-        android:layout_width="0dp"
+    <!-- Logo ở trên cùng -->
+    <ImageView
+        android:id="@+id/iv_logo"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
-        android:gravity="center"
-        android:text="Đăng nhập Google"
-        android:textSize="28sp"
-        android:textStyle="bold"
+        android:layout_marginTop="32dp"
+        android:adjustViewBounds="true"
+        android:src="@drawable/ic_logo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
+    <!-- Ảnh lớn số 1 -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_image_1"
         android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="24dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
+        app:layout_constraintDimensionRatio="16:9"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_logo">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:scaleType="fitStart"
+                android:src="@drawable/ic_image1" />
+
+        </FrameLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Ảnh lớn số 2 -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_image_2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
+        app:layout_constraintDimensionRatio="20:9"
+        app:layout_constraintEnd_toEndOf="@id/card_image_1"
+        app:layout_constraintStart_toStartOf="@id/card_image_1"
+        app:layout_constraintTop_toBottomOf="@id/card_image_1">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:scaleType="fitStart"
+                android:src="@drawable/ic_image2" />
+
+        </FrameLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Ảnh nhỏ số 3 -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_image_3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@id/card_image_4"
+        app:layout_constraintStart_toStartOf="@id/card_image_2"
+        app:layout_constraintTop_toBottomOf="@id/card_image_2">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_image3" />
+    </androidx.cardview.widget.CardView>
+
+    <!-- Ảnh nhỏ số 4 -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_image_4"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="@id/card_image_2"
+        app:layout_constraintStart_toEndOf="@id/card_image_3"
+        app:layout_constraintTop_toTopOf="@id/card_image_3">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_image4" />
+    </androidx.cardview.widget.CardView>
+
+    <!-- Nút Đăng nhập Google ở dưới cùng -->
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/btn_google_sign_in"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="511dp"
-        android:gravity="center"
-        android:orientation="vertical"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_auth_title"
-        app:layout_constraintVertical_bias="1.0">
-
-        <!-- Nút Đăng nhập Google -->
-        <com.google.android.gms.common.SignInButton
-            android:id="@+id/btn_google_sign_in"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp" />
-
-    </LinearLayout>
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
